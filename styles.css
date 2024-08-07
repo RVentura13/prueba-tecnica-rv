@@ -1,0 +1,119 @@
+body {
+	font-family: 'Outfit', sans-serif;
+	margin-left: 50px;
+}
+
+p {
+	margin-left: 50px;
+	line-height: 0.5px;
+}
+
+#error {
+	color: red;
+}
+
+h3 {
+	font-size: 24px;
+	font-weight: 500;
+}
+
+.button-container {
+	display: flex;
+	gap: 10px;
+}
+
+label {
+	display: block;
+}
+
+button {
+	width: 100px;
+	cursor: pointer;
+	color: white;
+	font-size: 15px;
+	background-color: #118dcd;
+	padding: 5px 10px;
+	border: none;
+	box-shadow: 2px 4px 8px #111321;
+	border-radius: 10px;
+	transition: all;
+	transition-duration: 100ms;
+}
+
+button:hover {
+	scale: 1.05;
+}
+
+a {
+	color: white;
+	text-decoration: none;
+}
+
+input {
+	border-radius: 10px;
+	padding: 5px 10px;
+}
+
+.form-container {
+	width: 500px;
+	padding: 5px 20px 30px;
+	border: solid;
+	border-width: 1px;
+	border-radius: 20px;
+	border: black;
+	box-shadow: 2px 4px 8px #111321;
+}
+
+.form-container input {
+	width: 200px;
+	border-radius: 10px;
+	padding: 5px 10px;
+}
+
+.form-container label {
+	display: block;
+}
+
+.container {
+	width: 500px;
+	height: 100px;
+	display: flex;
+	gap: 20px;
+	color: white;
+	text-align: center;
+}
+
+.container div {
+	background-color: #118dcd;
+	border-width: 1px;
+	border-radius: 20px;
+	border: black;
+	box-shadow: 2px 4px 8px #111321;
+	flex-grow: 1;
+}
+
+.container div:nth-child(2) {
+	background-color: #118dcd;
+	border-width: 1px;
+	border-radius: 20px;
+	border: black;
+	box-shadow: 2px 4px 8px #111321;
+	flex-grow: 2;
+}
+
+.box-media-querie {
+	width: 200px;
+	height: 200px;
+	background-color: #118dcd;
+	border-width: 1px;
+	border-radius: 20px;
+	border: black;
+	box-shadow: 2px 4px 8px #111321;
+}
+
+/* Media Querie pantalla de 768px */
+@media (max-width: 768px) {
+	.box-media-querie {
+		background-color: green;
+	}
+}

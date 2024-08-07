@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="UTF-8" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.googleapis.com"
+		/>
+		<link
+			rel="preconnect"
+			href="https://fonts.gstatic.com"
+			crossorigin
+		/>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<link
+			rel="stylesheet"
+			href="styles.css"
+		/>
+		<title>Javascript</title>
+	</head>
+	<body>
+		<button><a href="index.html"><<< Regresar</a></button>
+		<h1>Sección JavaScript</h1>
+		<h2>1.3</h2>
+
+		<p>{ nombre: 'Luis', edad: 25, genero: 'masculino', departamento: 'ventas' },</p>
+		<p>{ nombre: 'Pedro', edad: 20, genero: 'masculino', departamento: 'ventas' },</p>
+		<p>{ nombre: 'María', edad: 30, genero: 'femenino', departamento: 'contabilidad' },</p>
+		<p>{ nombre: 'Juan', edad: 25, genero: 'masculino', departamento: 'informática' },</p>
+		<p>{ nombre: 'Rosa', edad:20, genero: 'femenino', departamento: 'contabilidad' },</p>
+		<p>{ nombre: 'Norma', edad: 25, genero: 'femenino', departamento: 'informática' },</p>
+
+		<h3>Ingrese una propiedad para agrupar (nombre, edad, genero, departamento)</h3>
+		<input
+			type="text"
+			id="propiedad"
+			placeholder="Ingresar una propiedad"
+		/>
+		<button id="mostrar">Mostrar</button>
+		<button id="ocultar">Ocultar</button>
+
+		<p id="error"></p>
+
+		<pre id="json-output"></pre>
+
+		<h2>1.5</h2>
+		<h1>Weather APP</h1>
+
+		<!-- Inputs para el ingreso del país y ciudad para busqueda del clima -->
+		<h3>Ingrese un país y una ciudad para buscar el clima actual</h3>
+		<input
+			type="text"
+			id="country"
+			placeholder="Nombre del país"
+		/>
+		<input
+			type="text"
+			id="city"
+			placeholder="Nombre de la ciudad"
+		/>
+		<button id="buscar">Buscar</button>
+
+		<!-- Espacio en el que se imprimirá los resultados de la busqueda -->
+		<div id="clima"></div>
+	</body>
+	<script>
+		// ***************************** Seccion 1.3 *****************************
+
+		// Array de datos para agrupar con la función
+		const personas = [
+			{ nombre: 'Luis', edad: 25, genero: 'masculino', departamento: 'ventas' },
+			{ nombre: 'Pedro', edad: 20, genero: 'masculino', departamento: 'ventas' },
+			{ nombre: 'María', edad: 30, genero: 'femenino', departamento: 'contabilidad' },
+			{ nombre: 'Juan', edad: 25, genero: 'masculino', departamento: 'informática' },
+			{ nombre: 'Rosa', edad: 20, genero: 'femenino', departamento: 'contabilidad' },
+			{ nombre: 'Norma', edad: 25, genero: 'femenino', departamento: 'informática' },
+		];
+
+		let property = '';
+		// Función para agrupar el array
+		function myfunction(newArray, property) {
+			// Verificar si la propiedad existe en al menos un objeto del array
+			if (!newArray.some((obj) => obj.hasOwnProperty(property))) {
+				document.getElementById('error').innerHTML = `La propiedad "${property}" no existe en los objetos del array.`;
+			} else {
+				return newArray.reduce((acumulador, obj) => {
+					const key = obj[property];
+					//Condicional para saber si ya existe el array con la propiedad indicada
+					if (!acumulador[key]) {
+						acumulador[key] = []; // Crea un nuevo array en caso no exista
+					}
+					// Ingresa al array el objeto que tenga la propiedad indicada
+					acumulador[key].push(obj);
+
+					// Limpiar mensaje de error en pantalla en caso exista
+					document.getElementById('error').innerHTML = '';
+
+					// Convertir JSON a string formateado
+					const formattedJson = JSON.stringify(acumulador, null, 2);
+
+					// Mostrar JSON en el elemento <pre>
+					document.getElementById('json-output').textContent = formattedJson;
+
+					return acumulador; //Retorna el array
+				}, {});
+			}
+		}
+
+		document.getElementById('mostrar').addEventListener('click', () => {
+			// Variable para indicar la propiedad para agrupar
+			property = document.getElementById('propiedad').value;
+			// Llamado de la función
+			const groups = myfunction(personas, property);
+			property.value = '';
+		});
+
+		document.getElementById('ocultar').addEventListener('click', () => {
+			document.getElementById('json-output').textContent = '';
+			property.value = '';
+		});
+
+		// ***************************** Seccion 1.5 *****************************
+
+		// Variables globales
+		const appId = '37c66bd5d548946652401af23b5a77f6';
+		const kelvin = 273.15;
+
+		// Función del botón que acciona la busqueda
+		const search = document.getElementById('buscar').addEventListener('click', async () => {
+			Weather();
+		});
+
+		const Weather = async () => {
+			country = document.getElementById('country').value;
+			city = document.getElementById('city').value;
+
+			// Llamado a la api para obtener geo localización
+			const geoUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&appid=${appId}`;
+			const response = await fetch(geoUrl);
+			try {
+				const geoData = await response.json();
+
+				lat = geoData[0].lat;
+				lon = geoData[0].lon;
+
+				if (response.ok) {
+					// Llamado a la api del clima
+					const URL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&exclude=current&appid=${appId}`;
+					try {
+						const response = await fetch(URL);
+						const data = await response.json();
+						currentWeather(data);
+					} catch (error) {
+						errorMessage('Error al obtener los datos del clima');
+						console.error(error);
+					}
+				}
+			} catch (error) {
+				errorMessage('Error al obtener la localización');
+				console.error(error);
+			} finally {
+				country.value = '';
+				city.value = '';
+			}
+		};
+
+		// Manipulación del dom para imprimir la información del clima cuando esté lista
+		const currentWeather = (data) => {
+			const weather = document.getElementById('clima');
+			weather.innerHTML = `<p>Clima para hoy en : ${city}, ${country}</p>
+			<p>Sensación: ${Math.round(data.main.feels_like - kelvin)}°C</p>
+            <p>Temperatura actual: ${Math.round(data.main.temp - kelvin)}°C</p>
+            <p>Temperatura mínima: ${Math.round(data.main.temp_min - kelvin)}°C</p>
+            <p>Temperatura máxima: ${Math.round(data.main.temp_max - kelvin)}°C</p>`;
+		};
+
+		// Mensaje de error si la localización no es encontrada
+		const errorMessage = (message) => {
+			const messageError = document.getElementById('clima');
+
+			messageError.innerHTML = `<p style='color: red'>${message}</p>`;
+		};
+	</script>
+</html>
